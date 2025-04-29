@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\dev\\projects\\TariefasWebApi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|c:\\dev\\projects\\tariefaswebapi\\tariefaswebapi\\controllers\\todocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|solutionrelative:tariefaswebapi\\controllers\\todocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|c:\\dev\\projects\\tariefaswebapi\\tariefaswebapi\\data\\tariefasdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|solutionrelative:tariefaswebapi\\data\\tariefasdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|c:\\dev\\projects\\tariefaswebapi\\tariefaswebapi\\models\\todo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41DDAFD4-3877-4DD4-AAA8-D8DF374B4F1C}|TariefasWebApi\\TariefasWebApi.csproj|solutionrelative:tariefaswebapi\\models\\todo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Todo.cs",
+              "DocumentMoniker": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Models\\Todo.cs",
+              "RelativeDocumentMoniker": "TariefasWebApi\\Models\\Todo.cs",
+              "ToolTip": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Models\\Todo.cs",
+              "RelativeToolTip": "TariefasWebApi\\Models\\Todo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T20:23:32.333Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TariefasDBContext.cs",
+              "DocumentMoniker": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Data\\TariefasDBContext.cs",
+              "RelativeDocumentMoniker": "TariefasWebApi\\Data\\TariefasDBContext.cs",
+              "ToolTip": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Data\\TariefasDBContext.cs",
+              "RelativeToolTip": "TariefasWebApi\\Data\\TariefasDBContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T20:44:41.309Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TodoController.cs",
+              "DocumentMoniker": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Controllers\\TodoController.cs",
+              "RelativeDocumentMoniker": "TariefasWebApi\\Controllers\\TodoController.cs",
+              "ToolTip": "C:\\dev\\projects\\TariefasWebApi\\TariefasWebApi\\Controllers\\TodoController.cs",
+              "RelativeToolTip": "TariefasWebApi\\Controllers\\TodoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T19:43:33.721Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
