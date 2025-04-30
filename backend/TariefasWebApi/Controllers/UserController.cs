@@ -41,7 +41,7 @@ namespace TariefasWebApi.Controllers
         {
             var users = context.GetCollection<User>("users");
             var user = users.FindOne(users => users.Email == email);
-            if (user == null) return NotFound("User not found");
+            if (user == null) return AddUser(new User(email, password));
             if (user.Password != password) return BadRequest("Wrong Password");
             return Ok(user.Id);
         }

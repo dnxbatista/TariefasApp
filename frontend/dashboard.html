@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Tariefas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-indigo-500 to-purple-600 min-h-screen text-gray-800">
+  <div class="max-w-4xl mx-auto py-10 px-4">
+    <header class="flex items-center justify-between mb-10">
+      <div class="text-center w-full">
+        <h1 id="appTitle" class="text-4xl font-bold text-white">Tariefas</h1>
+        <p id="appSubtitle" class="text-lg text-white/80">Gerencie suas tarefas com estilo</p>
+      </div>
+      <div class="absolute top-5 right-5">
+        <select id="languageSelector" class="px-2 py-1 rounded-xl border focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <option value="pt">🇧🇷 PT</option>
+          <option value="en">🇺🇸 EN</option>
+          <option value="fr">🇫🇷 FR</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Formulário -->
+    <section class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+      <h2 id="newTaskTitle" class="text-xl font-semibold mb-4 text-purple-700">Nova Tarefa</h2>
+      <form id="taskForm" class="space-y-4">
+        <input id="title" type="text" required placeholder="Título" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <textarea id="description" required placeholder="Descrição" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+        <button id="submitBtn" type="submit" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-xl transition duration-200">
+          Adicionar Tarefa
+        </button>
+      </form>
+    </section>
+
+    <!-- Lista de tarefas -->
+    <section>
+      <h2 id="taskListTitle" class="text-2xl text-white mb-4">Suas Tarefas</h2>
+      <div id="taskList" class="grid md:grid-cols-2 gap-4"></div>
+    </section>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const taskForm = document.getElementById('taskForm');
+    const taskList = document.getElementById('taskList');
+    const titleInput = document.getElementById('title');
+    const descriptionInput = document.getElementById('description');
+    const languageSelector = document.getElementById('languageSelector');
+    const appTitle = document.getElementById('appTitle');
+    const appSubtitle = document.getElementById('appSubtitle');
+    const newTaskTitle = document.getElementById('newTaskTitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const taskListTitle = document.getElementById('taskListTitle');
+
+    let tasks = JSON.parse(localStorage.getItem('tariefas')) || [];
+    let editingIndex = null;
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    const translations = {
+      pt: {
+        appTitle: 'Tariefas',
+        appSubtitle: 'Gerencie suas tarefas com estilo',
+        newTaskTitle: 'Nova Tarefa',
+        addTask: 'Adicionar Tarefa',
+        saveEdit: 'Salvar Edição',
+        yourTasks: 'Suas Tarefas',
+        completed: 'Concluída',
+        placeholders: {
+          title: 'Título',
+          description: 'Descrição'
+        }
+      },
+      en: {
+        appTitle: 'Tariefas',
+        appSubtitle: 'Manage your tasks in style',
+        newTaskTitle: 'New Task',
+        addTask: 'Add Task',
+        saveEdit: 'Save Changes',
+        yourTasks: 'Your Tasks',
+        completed: 'Completed',
+        placeholders: {
+          title: 'Title',
+          description: 'Description'
+        }
+      },
+      fr: {
+        appTitle: 'Tariefas',
+        appSubtitle: 'Gérez vos tâches avec style',
+        newTaskTitle: 'Nouvelle Tâche',
+        addTask: 'Ajouter une Tâche',
+        saveEdit: 'Enregistrer',
+        yourTasks: 'Vos Tâches',
+        completed: 'Terminée',
+        placeholders: {
+          title: 'Titre',
+          description: 'Description'
+        }
+      }
+    };
+
+    function applyTranslations() {
+      const t = translations[currentLang];
+      appTitle.textContent = t.appTitle;
+      appSubtitle.textContent = t.appSubtitle;
+      newTaskTitle.textContent = t.newTaskTitle;
+      taskListTitle.textContent = t.yourTasks;
+      submitBtn.textContent = editingIndex !== null ? t.saveEdit : t.addTask;
+      titleInput.placeholder = t.placeholders.title;
+      descriptionInput.placeholder = t.placeholders.description;
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const t = translations[currentLang];
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-xl shadow-md flex flex-col justify-between';
+        card.innerHTML = `
+          <div>
+            <h3 class="text-lg font-bold text-purple-700">${task.title}</h3>
+            <p class="text-gray-600">${task.description}</p>
+          </div>
+          <div class="flex items-center justify-between mt-4">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleDone(${index})" class="w-5 h-5 text-purple-600 rounded">
+              <span class="${task.done ? 'line-through text-gray-400' : ''}">${t.completed}</span>
+            </label>
+            <div class="flex gap-2">
+              <button onclick="editTask(${index})" class="text-blue-500 hover:text-blue-700 text-xl font-bold" title="Editar">✏️</button>
+              <button onclick="deleteTask(${index})" class="text-red-500 hover:text-red-700 text-xl font-bold" title="Apagar">🗑️</button>
+            </div>
+          </div>
+        `;
+        taskList.appendChild(card);
+      });
+    }
+
+    function toggleDone(index) {
+      tasks[index].done = !tasks[index].done;
+      saveTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+    }
+
+    function editTask(index) {
+      const task = tasks[index];
+      titleInput.value = task.title;
+      descriptionInput.value = task.description;
+      editingIndex = index;
+      applyTranslations();
+    }
+
+    taskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = titleInput.value.trim();
+      const description = descriptionInput.value.trim();
+      if (!title || !description) return;
+
+      if (editingIndex !== null) {
+        tasks[editingIndex].title = title;
+        tasks[editingIndex].description = description;
+        editingIndex = null;
+      } else {
+        tasks.push({ title, description, done: false });
+      }
+
+      taskForm.reset();
+      saveTasks();
+      applyTranslations();
+    });
+
+    languageSelector.addEventListener('change', (e) => {
+      currentLang = e.target.value;
+      localStorage.setItem('lang', currentLang);
+      applyTranslations();
+      renderTasks();
+    });
+
+    function saveTasks() {
+      localStorage.setItem('tariefas', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    function initialize() {
+      languageSelector.value = currentLang;
+      applyTranslations();
+      renderTasks();
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
