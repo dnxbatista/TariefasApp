@@ -102,27 +102,43 @@
       applyTranslations();
     });
 
-    function login(){
-      var inputData = {
+    async function login()
+    {
+      var inputData = 
+      {
         email: emailInput.value,
         password: passwordInput.value
       };
 
-      var data = fetch(`https://localhost:7148/api/User/Auth/${inputData.email}-${inputData.password}`, {
-        method: 'GET',
-        headers: {
+      var response = await fetch(`https://localhost:7148/api/User/Auth`, {
+        method: 'POST',
+        headers: 
+        {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
-      })
+        body: JSON.stringify(inputData)
+      });
 
-      console.log(data);
+      if (!response.ok) 
+      {
+        console.error('Login failed:', await response.text());
+        return;
+      }
+
+      const userData = await response.json();
+      console.log('Login successful:', userData);
+      // Store user data on session storage
+      sessionStorage.setItem('userData', JSON.stringify(userData));
+      // Redirect to dashboard
+      window.location.href = "dashboard.html";
     }
 
-    function initialize() {
-      languageSelector.value = currentLang;
-      applyTranslations();
-    }
+    function initialize() 
+      {
+        languageSelector.value = currentLang;
+        applyTranslations();
+        
+      }
 
     initialize();
   </script>

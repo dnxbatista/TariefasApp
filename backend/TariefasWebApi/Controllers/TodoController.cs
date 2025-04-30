@@ -36,17 +36,23 @@ namespace TariefasWebApi.Controllers
         }
 
         [HttpPut("edit/{userId:guid}-{taskId:int}")]
-        public IActionResult UpdateTodoFromUser(Guid userId, int taskId, Todo todo)
+        public IActionResult UpdateTodoFromUser(Guid userId, int taskId,[FromBody] Todo todo)
         {
-            var todos = context.GetCollection<Todo>("todos");
-            var existingTodo = todos.FindOne(x => x.UserId == userId && x.TaskId == taskId);
-            if (existingTodo == null) return NotFound("Todo not found.");
-            // Update the todo in one line
-            existingTodo.Title = todo.Title;
-            existingTodo.Description = todo.Description;
-            existingTodo.IsCompleted = todo.IsCompleted;
-            todos.Update(existingTodo);
-            return Ok(existingTodo);
+            try
+            {
+                var todos = context.GetCollection<Todo>("todos");
+                var existingTodo = todos.FindOne(x => x.UserId == userId && x.TaskId == taskId);
+                if (existingTodo == null) return NotFound("Todo not found.");
+                existingTodo.Title = todo.Title;
+                existingTodo.Description = todo.Description;
+                existingTodo.IsCompleted = todo.IsCompleted;
+                todos.Update(existingTodo);
+                return Ok(existingTodo);
+            }
+            catch(Exception)
+            {
+                return BadRequest("Error");
+            }
         }
 
         [HttpDelete("delete/{userId:guid}-{taskId:int}")]

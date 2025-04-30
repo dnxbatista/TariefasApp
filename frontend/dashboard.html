@@ -54,7 +54,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const taskListTitle = document.getElementById('taskListTitle');
 
-    let tasks = JSON.parse(localStorage.getItem('tariefas')) || [];
+    let tasks = [];
     let editingIndex = null;
     let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -113,8 +113,8 @@
 
     function renderTasks() {
       taskList.innerHTML = '';
+      const t = translations[currentLang];
       tasks.forEach((task, index) => {
-        const t = translations[currentLang];
         const card = document.createElement('div');
         card.className = 'bg-white p-4 rounded-xl shadow-md flex flex-col justify-between';
         card.innerHTML = `
@@ -143,8 +143,24 @@
     }
 
     function deleteTask(index) {
-      tasks.splice(index, 1);
-      saveTasks();
+      const user = JSON.parse(sessionStorage.getItem('userData'));
+      const task = tasks[index];
+      if (!user || !task.id) return;
+
+      fetch(`https://localhost:7148/api/Todo/delete/${user.id}-${task.id}`, {
+        method: 'DELETE',
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Erro ao deletar tarefa:', response.status);
+          return;
+        }
+        tasks.splice(index, 1);
+        renderTasks();
+      })
+      .catch(error => {
+        console.error('Erro ao conectar com a API:', error);
+      });
     }
 
     function editTask(index) {
@@ -155,23 +171,66 @@
       applyTranslations();
     }
 
-    taskForm.addEventListener('submit', (e) => {
+    taskForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = titleInput.value.trim();
       const description = descriptionInput.value.trim();
-      if (!title || !description) return;
+      const user = JSON.parse(sessionStorage.getItem('userData'));
+      if (!title || !description || !user) return;
 
       if (editingIndex !== null) {
-        tasks[editingIndex].title = title;
-        tasks[editingIndex].description = description;
-        editingIndex = null;
+        const task = tasks[editingIndex];
+        try {
+          const response = await fetch(`https://localhost:7148/api/Todo/edit/${user.id}-${task.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              UserId: user.id,
+              TaskId: task.id,
+              Title: title,
+              Description: description,
+              IsCompleted: task.done
+            })
+          });
+          if (!response.ok) throw new Error();
+
+          task.title = title;
+          task.description = description;
+          editingIndex = null;
+        } catch (err) {
+          console.error('Erro ao atualizar tarefa:', err);
+        }
       } else {
-        tasks.push({ title, description, done: false });
+        try {
+          const response = await fetch('https://localhost:7148/api/Todo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              taskId: 0,
+              userId: user.id,
+              title: title,
+              description: description,
+              isCompleted: false
+            })
+          });
+
+          if (!response.ok) throw new Error();
+          const newTask = await response.json();
+
+          tasks.push({
+            title: newTask.title,
+            description: newTask.description,
+            done: newTask.isCompleted,
+            id: newTask.taskId
+          });
+        } catch (err) {
+          console.error('Erro ao adicionar tarefa:', err);
+        }
       }
 
       taskForm.reset();
-      saveTasks();
       applyTranslations();
+      renderTasks();
     });
 
     languageSelector.addEventListener('change', (e) => {
@@ -186,10 +245,32 @@
       renderTasks();
     }
 
+    async function getTasksFromDB() {
+      const user = JSON.parse(sessionStorage.getItem('userData'));
+      if (!user) return;
+      try {
+        const response = await fetch(`https://localhost:7148/api/Todo/${user.id}`);
+        if (!response.ok) {
+          console.error('Erro ao buscar tarefas:', response.status);
+          return;
+        }
+        const data = await response.json();
+        tasks = data.map(todo => ({
+          title: todo.title,
+          description: todo.description,
+          done: todo.isCompleted,
+          id: todo.taskId
+        }));
+        renderTasks();
+      } catch (err) {
+        console.error('Erro ao conectar com a API:', err);
+      }
+    }
+
     function initialize() {
       languageSelector.value = currentLang;
       applyTranslations();
-      renderTasks();
+      getTasksFromDB();
     }
 
     initialize();

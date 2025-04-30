@@ -21,29 +21,46 @@ namespace TariefasWebApi.Controllers
         [HttpPost]
         public IActionResult AddUser(User user)
         {
-            var users = context.GetCollection<User>("users");
-            if (users.FindOne(u => u.Email == user.Email) != null) return BadRequest("This email is already in use");
-            users.Insert(user);
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+            try
+            {
+                var users = context.GetCollection<User>("users");
+                if (users.FindOne(u => u.Email == user.Email) != null) return BadRequest("This email is already in use");
+                users.Insert(user);
+                Console.WriteLine($"New User Created!\n{user}");
+                return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error");
+            }
+            
         }
 
         [HttpGet("{id:guid}")]
         public IActionResult GetUserById(Guid id)
         {
-            var users = context.GetCollection<User>("users");
-            var user = users.FindOne(users => users.Id == id);
-            if (user == null) return NotFound("User not found");
-            return Ok(user);
+            try
+            {
+                var users = context.GetCollection<User>("users");
+                var user = users.FindOne(users => users.Id == id);
+                if (user == null) return NotFound("User not found");
+                return Ok(user);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error");
+            }         
         }
 
-        [HttpGet("Auth/{email}-{password}")]
-        public IActionResult CheckUser(string email, string password)
+        [HttpPost("Auth")]
+        public IActionResult CheckUser([FromBody] User login)
         {
             var users = context.GetCollection<User>("users");
-            var user = users.FindOne(users => users.Email == email);
-            if (user == null) return AddUser(new User(email, password));
-            if (user.Password != password) return BadRequest("Wrong Password");
-            return Ok(user.Id);
+            var user = users.FindOne(users => users.Email == login.Email);
+            if (user == null) return AddUser(login);
+            if (user.Password != login.Password) return BadRequest("Wrong Password");
+            Console.WriteLine($"User Authenticated!\n{user}");
+            return Ok(user);
         }
 
         [HttpDelete("{id:guid}")]
