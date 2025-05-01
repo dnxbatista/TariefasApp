@@ -1,1 +1,2 @@
 # TariefasApp
+**TariefasApp** is a simple task list web application where users can create, view, and manage their daily tasks. The frontend is built as a responsive website, and all tasks are stored in a database through a custom API developed by me using **C# and ASP.NET Core Web API**. This project demonstrates full-stack development, including API design, database integration, and client-server communication.

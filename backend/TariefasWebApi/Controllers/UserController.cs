@@ -26,7 +26,7 @@ namespace TariefasWebApi.Controllers
                 var users = context.GetCollection<User>("users");
                 if (users.FindOne(u => u.Email == user.Email) != null) return BadRequest("This email is already in use");
                 users.Insert(user);
-                Console.WriteLine($"New User Created!\n{user}");
+                Console.WriteLine($"New User Created!\nUser Email: {user.Email}");
                 return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
             }
             catch (Exception)
