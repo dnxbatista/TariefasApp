@@ -49,8 +49,9 @@ namespace TariefasWebApi.Controllers
                 todos.Update(existingTodo);
                 return Ok(existingTodo);
             }
-            catch(Exception)
+            catch(Exception err)
             {
+                Console.WriteLine(err);
                 return BadRequest("Error");
             }
         }

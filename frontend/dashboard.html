@@ -137,9 +137,30 @@
       });
     }
 
-    function toggleDone(index) {
-      tasks[index].done = !tasks[index].done;
-      saveTasks();
+    async function toggleDone(index) {
+      try {
+        const user = JSON.parse(sessionStorage.getItem('userData'));
+        const task = tasks[index];
+        tasks[index].done = !tasks[index].done;
+        console.log(task.done);
+        const response = await fetch(`https://localhost:7148/api/Todo/edit/${user.id}-${task.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              UserId: user.id,
+              TaskId: task.id,
+              Title: task.title,
+              Description: task.description,
+              IsCompleted: task.done
+            })
+          });
+          const data = await response.json();
+          console.log(data);
+          if (!response.ok) throw new Error();
+        saveTasks();
+      } catch (error) {
+        console.error('Erro ao atualizar tarefa:', error);
+      }      
     }
 
     function deleteTask(index) {
